@@ -3,6 +3,7 @@ class Pair:
         self.first = first
         self.second = second
 
+
 class Solution:
     def solveSudoku(self, board: List[List[str]]) -> None:
         """
@@ -27,15 +28,28 @@ class Solution:
         solved_flag = False
         prev_x = 0
         prev_y = 0
+        possibles = {}
         while solved_flag is False:
+            # Collect all possible answers
             for y in range(9):
                 for x in range(9):
                     if board[y][x] == ".":
-                        board[y][x] = self.attemptSolve(board, x, y, prev_x, prev_y)
+                        possibles[(y,x)] = self.getPossibles(board, x, y, prev_x, prev_y)
 
                     prev_x = x
                     prev_y = y
 
+            # Now do a pass checking for simple solves
+            # If there's only one possible answer, just put it into the board
+            for k, v in possibles.items():
+                if len(v) == 1:
+                    board[k[0]][k[1]] = v
+
+            # Now check for more complicated solves using a search
+            
+
+
+            # Check to see if solved yet
             solved_flag = True
             for x in range(9):
                 for y in range(9):
@@ -44,9 +58,7 @@ class Solution:
 
         print(board)
     
-    def attemptSolve(self, board: [List[List[str]]], x, y, prev_x, prev_y) -> None:
-        possible_numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
+    def getPossibles(self, board: [List[List[str]]], x, y, prev_x, prev_y) -> None:
         unique_numbers = {}
 
         for i in range(1,10):
@@ -64,20 +76,12 @@ class Solution:
             if v == True:
                 unique_numbers[k] = v
 
-        count = 0
-        for num, flag in unique_numbers.items():
-            if flag == True:
-                count = count + 1
+        possibles = []
+        for k, v in unique_numbers.items():
+            if flag == False:  # Aka, if this number isn't already found in the groupings, it's possible
+                possibles.insert(v)
 
-        if count == 8:
-            for num, flag in unique_numbers.items():
-                if flag == False:
-                    return "{}".format(num)
-
-        print("{},{}".format(y,x))
-        print(unique_numbers)
-
-        return "."
+        return possibles
     
     def checkRow(self, board: [List[List[str]]], y):
         numbers = {}
@@ -100,15 +104,15 @@ class Solution:
     def checkSubMatrix(self, board: [List[List[str]]], x, y):
         numbers = {}
 
-        if x >= 0 and x <= 2:  # Left Hand Side
-            if y >= 0 and y <= 2:  # Upper Left
+        if x >= 0 and x <= 2: 
+            if y >= 0 and y <= 2: 
                 numbers = self.searchSub(board, 0, 0)
-            elif y >= 3 and y <= 5:  # Middle Left
+            elif y >= 3 and y <= 5:
                 numbers = self.searchSub(board, 0, 3)
-            elif y >= 6 and y <= 8:  # Bottom Left
+            elif y >= 6 and y <= 8:
                 numbers = self.searchSub(board, 0, 6)
-        elif x >= 3 and x<= 5:  # Center
-            if y >= 0 and y <= 2:  # Top Center
+        elif x >= 3 and x<= 5:
+            if y >= 0 and y <= 2:
                 numbers = self.searchSub(board, 3, 0)
             elif y >= 3 and y <= 5:  # Center
                 numbers = self.searchSub(board, 3, 3)
@@ -133,8 +137,9 @@ class Solution:
                     numbers[board[y][x]] = True
         
         return numbers
-
-    def initWeightMap(self):
-        for x in range(9):
-            for y in range(9):
-                self.weight_map[Pair(y,x)] = 0
+    
+    def checkComplexSolves(self, board: [List[List[str]]], possibles):
+        # Build a new list of possibles for the cell through process of elimination
+        # If any other cell in a group has the same possible, we eliminate it (A bit of a shortcut)
+        # If we are left with one possible, that's the answer
+        
