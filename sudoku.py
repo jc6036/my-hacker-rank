@@ -4,8 +4,6 @@ class Pair:
         self.second = second
 
 class Solution:
-    weight_map = {}
-
     def solveSudoku(self, board: List[List[str]]) -> None:
         """
         Do not return anything, modify board in-place instead.
@@ -22,21 +20,21 @@ class Solution:
         #    1a. Can be accomplished with a supplementary structure of map of pairs. [(X,Y), Z]        
         # 2. Check between every quad/row/column for a valid number, to skip some calcluations
         # 3. Only re-calculate row, quadrant, or column, if the next square you choose is in a different one
+        # 4. Issue: can't solve when therea re squares with more than one potential answer. Need to implement
+        #    memory for each empty square, so that I can reference all the possible solutions for each square
+        #    and adjust them as I go. If a square has a possible answer that no other square in a row, column, or sub has, then that's the answer.
 
-        self.initWeightMap()
         solved_flag = False
         prev_x = 0
         prev_y = 0
         while solved_flag is False:
-            for coords, weight in reversed(self.weight_map.copy().items()):
-                y = coords.first
-                x = coords.second
-                if board[y][x] == ".":
-                    board[y][x] = self.attemptSolve(board, x, y, prev_x, prev_y)
+            for y in range(9):
+                for x in range(9):
+                    if board[y][x] == ".":
+                        board[y][x] = self.attemptSolve(board, x, y, prev_x, prev_y)
 
-                prev_x = x
-                prev_y = y
-
+                    prev_x = x
+                    prev_y = y
 
             solved_flag = True
             for x in range(9):
@@ -70,12 +68,14 @@ class Solution:
         for num, flag in unique_numbers.items():
             if flag == True:
                 count = count + 1
-        self.weight_map[Pair(x,y)] = count
 
         if count == 8:
             for num, flag in unique_numbers.items():
                 if flag == False:
                     return "{}".format(num)
+
+        print("{},{}".format(y,x))
+        print(unique_numbers)
 
         return "."
     
