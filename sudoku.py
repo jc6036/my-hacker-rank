@@ -29,43 +29,43 @@ class Solution:
         prev_y = 0
         while solved_flag is False:
             for coords, weight in reversed(self.weight_map.copy().items()):
-                x = coords.first
-                y = coords.second
-                if board[x][y] == ".":
-                    board[x][y] = self.attemptSolve(board, x, y, prev_x, prev_y)
+                y = coords.first
+                x = coords.second
+                if board[y][x] == ".":
+                    board[y][x] = self.attemptSolve(board, x, y, prev_x, prev_y)
 
                 prev_x = x
                 prev_y = y
 
+
             solved_flag = True
-            for coords, weight in self.weight_map.items():
-                if weight != "9":
-                    solved_flag = False
+            for x in range(9):
+                for y in range(9):
+                    if board[y][x] == ".":
+                        solved_flag = False
 
         print(board)
     
     def attemptSolve(self, board: [List[List[str]]], x, y, prev_x, prev_y) -> None:
         possible_numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
         unique_numbers = {}
 
-        for i in range(9):
-            unique_numbers[i] = False
+        for i in range(1,10):
+            unique_numbers["{}".format(i)] = False
+        
+        for k, v in self.checkRow(board, y).items():
+            if v == True:
+                unique_numbers[k] = v
+        
+        for k, v in self.checkColumn(board, x).items():
+            if v == True:
+                unique_numbers[k] = v
+        
+        for k, v in self.checkSubMatrix(board, x, y).items():
+            if v == True:
+                unique_numbers[k] = v
 
-        if y != prev_y:
-            for num, flag in self.checkRow(board, x).items():
-                unique_numbers[num] = flag
-        
-        if x != prev_x:
-            for num, flag in self.checkColumn(board, y).items():
-                unique_numbers[num] = flag
-        
-        if (x >= 3 and prev_x <= 2) or \
-           (x >= 6 and prev_x <= 5) or \
-           (y >= 3 and prev_y <= 2) or \
-           (y >= 6 and prev_y <= 5):
-            for num, flag in self.checkSubMatrix(board, x, y).items():
-                unique_numbers[num] = flag
-        
         count = 0
         for num, flag in unique_numbers.items():
             if flag == True:
@@ -79,28 +79,28 @@ class Solution:
 
         return "."
     
-    def checkRow(self, board: [List[List[str]]], x):
+    def checkRow(self, board: [List[List[str]]], y):
         numbers = {}
 
         for i in range(9):
-            if board[x][i] != ".":
-                numbers[board[x][i]] = True
+            if board[y][i] != ".":
+                numbers[board[y][i]] = True
 
         return numbers
     
-    def checkColumn(self, board: [List[List[str]]], y):
+    def checkColumn(self, board: [List[List[str]]], x):
         numbers = {}
 
         for i in range(9):
-            if board[i][y] != ".":
-                numbers[board[i][y]] = True
+            if board[i][x] != ".":
+                numbers[board[i][x]] = True
 
         return numbers
     
     def checkSubMatrix(self, board: [List[List[str]]], x, y):
         numbers = {}
 
-        if x >= 0 and x<= 2:  # Left Hand Side
+        if x >= 0 and x <= 2:  # Left Hand Side
             if y >= 0 and y <= 2:  # Upper Left
                 numbers = self.searchSub(board, 0, 0)
             elif y >= 3 and y <= 5:  # Middle Left
@@ -127,14 +127,15 @@ class Solution:
     def searchSub(self, board: [List[List[str]]], low_x, low_y):
         numbers = {}
 
-        for i in range(low_x,3):
-            for z in range(low_y,3):
-                if board[i][z] != ".":
-                    numbers[board[i][z]] = True
+        for y in range(low_y, low_y + 3):
+            for x in range(low_x, low_x + 3):
+                print(board[y][x])
+                if board[y][x] != ".":
+                    numbers[board[y][x]] = True
         
         return numbers
 
     def initWeightMap(self):
         for x in range(9):
             for y in range(9):
-                self.weight_map[Pair(x,y)] = 0
+                self.weight_map[Pair(y,x)] = 0
