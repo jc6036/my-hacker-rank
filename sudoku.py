@@ -129,7 +129,6 @@ class Solution:
 
         for y in range(low_y, low_y + 3):
             for x in range(low_x, low_x + 3):
-                print(board[y][x])
                 if board[y][x] != ".":
                     numbers[board[y][x]] = True
         
