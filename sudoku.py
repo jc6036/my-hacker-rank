@@ -13,19 +13,21 @@ class Solution:
         solved_flag = False
         prev_x = 0
         prev_y = 0
+
+        # Collect all possible answers into a map of [y,x][str[]]
+        possibles = {}
+        for y in range(9):
+            for x in range(9):
+                if board[y][x] == ".":
+                    possibles[(y,x)] = self.getPossibles(board, x, y, prev_x, prev_y)
+
+                prev_x = x
+                prev_y = y
+
         while solved_flag is False:
-            # Collect all possible answers
-            possibles = {}
-            for y in range(9):
-                for x in range(9):
-                    if board[y][x] == ".":
-                        possibles[(y,x)] = self.getPossibles(board, x, y, prev_x, prev_y)
-
-                    prev_x = x
-                    prev_y = y
-
             # Now analyze each square and perform a process of elimination on possibles for that
             # square. If you get down to 1 possible left, that's the answer.
+            # If an answer is found, eliminate that answer from the possibles in that cells groups
             board = self.solvePossibles(board, possibles)
 
             # Check to see if solved yet
@@ -123,23 +125,39 @@ class Solution:
                 if board[y][x] == ".":
                     tracker = possibles[(y,x)].copy()
 
+                    # Solve singles first before doing any possibility checkoff
+                    if len(tracker) == 1:
+                        board[y][x] = tracker[0]
+                        possibles.pop((y,x))
+                        possibles = self.adjustPossibles(tracker[0], possibles, x, y)
+                        continue
+
+                    # Go through process of elminiation to figure out the only number a cell could be within a single group
                     tracker = self.solveGroups(board, tracker, possibles, x, y)
 
                     if len(tracker) == 1:
                         board[y][x] = tracker[0]
                         possibles.pop((y,x))
-                    
+                        possibles = self.adjustPossibles(tracker[0], possibles, x, y)
+
+                    # Naked doubles implementation
+
         return board
     
     def solveGroups(self, board: [List[List[str]]], tracker, possibles, x, y):
+        #  Check each group for cells where there is a possible that is not in any other cell in the group - that's the answer
         if len(tracker) > 0:
-            tracker = self.solveRows(board, tracker, possibles, y, x)
+            rowCheck = self.solveRows(board, tracker.copy(), possibles, y, x)
+            if len(rowCheck) == 1:
+                return rowCheck
         
-        if len(tracker) > 0:
-            tracker = self.solveColumns(board, tracker, possibles, x, y)
-        
-        if len(tracker) > 0:
-            tracker = self.solveSubMatrix(board, tracker, possibles, x, y)
+            colCheck = self.solveColumns(board, tracker.copy(), possibles, x, y)
+            if len(colCheck) == 1:
+                return colCheck
+
+            subCheck = self.solveSubMatrix(board, tracker.copy(), possibles, x, y)
+            if len(subCheck) == 1:
+                return subCheck
 
         return tracker
     
@@ -201,3 +219,63 @@ class Solution:
                                 break
         
         return tracker
+    
+    def adjustPossibles(self, answer, possibles, x, y):
+        for k, v in possibles.items():
+            if k[0] == y or k[1] == x:
+                for i in range(len(v)):                    
+                    if v[i] == answer:
+                        v.pop(i)
+                        break
+            
+            # God I HATE this - fix immediately after its working
+            if (k[0] >= 0 and k[0] <= 2) and (y >= 0 and y <= 2):
+                if(k[1] >= 0 and k[1] <= 2) and (x >= 0 and x <= 2):
+                    for i in range(len(v)):
+                        if v[i] == answer:
+                            v.pop(i)
+                            break
+                elif(k[1] >= 3 and k[1] <= 5) and (x >= 3 and x <= 5):
+                    for i in range(len(v)):
+                        if v[i] == answer:
+                            v.pop(i)
+                            break
+                elif(k[1] >= 6 and k[1] <= 8) and (x >= 6 and x <= 8):
+                    for i in range(len(v)):
+                        if v[i] == answer:
+                            v.pop(i)
+                            break
+            elif (k[0] >= 3 and k[0] <= 5) and (y >= 3 and y <= 5):
+                if(k[1] >= 0 and k[1] <= 2) and (x >= 0 and x <= 2):
+                    for i in range(len(v)):
+                        if v[i] == answer:
+                            v.pop(i)
+                            break
+                elif(k[1] >= 3 and k[1] <= 5) and (x >= 3 and x <= 5):
+                    for i in range(len(v)):
+                        if v[i] == answer:
+                            v.pop(i)
+                            break
+                elif(k[1] >= 6 and k[1] <= 8) and (x >= 6 and x <= 8):
+                    for i in range(len(v)):
+                        if v[i] == answer:
+                            v.pop(i)
+                            break
+            elif (k[0] >= 6 and k[0] <= 8) and (y >= 6 and y <= 8):
+                if(k[1] >= 0 and k[1] <= 2) and (x >= 0 and x <= 2):
+                    for i in range(len(v)):
+                        if v[i] == answer:
+                            v.pop(i)
+                            break
+                elif(k[1] >= 3 and k[1] <= 5) and (x >= 3 and x <= 5):
+                    for i in range(len(v)):
+                        if v[i] == answer:
+                            v.pop(i)
+                            break
+                elif(k[1] >= 6 and k[1] <= 8) and (x >= 6 and x <= 8):
+                    for i in range(len(v)):
+                        if v[i] == answer:
+                            v.pop(i)
+                            break
+
+        return possibles
