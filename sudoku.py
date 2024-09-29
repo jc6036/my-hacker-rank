@@ -20,27 +20,33 @@ class Solution:
             y = 0
             x = index
         else:
-            y = y // 8
-            x = index - (y * 8) - 1
+            y = index // 8
+            x = index - (y * 8)
+            if index % 8 == 0:
+                y = y - 1
+                x = 8
 
         if board[y][x] == ".":
-            valid = True
             if first_solve < 0:
                 first_solve = index
             for i in range(1, 10):
+                valid = True
                 # Check Column grouping
                 for check_x in range(9):
                     if board[y][check_x] == "{}".format(i):
                         valid = False
+                        break
                 # Check Row
                 for check_y in range(9):
                     if board[check_y][x] == "{}".format(i):
                         valid = False
+                        break
                 # Check sub group
-                for check_x in range(x // 3, ((x // 3) + 3)):
-                    for check_y in range(y // 3, ((y // 3) + 3)):
+                for check_x in range((x // 3)*3, (((x // 3)*3) + 3)):
+                    for check_y in range((y // 3)*3, (((y // 3)*3) + 3)):
                         if board[check_y][check_x] == "{}".format(i):
                             valid = False
+                            break
 
                 if valid == True:
                     board[y][x] = "{}".format(i)  # Save our possily valid answer to the board
