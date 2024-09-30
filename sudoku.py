@@ -10,21 +10,17 @@ class Solution:
         # If we find a valid num, recurse call solve(index + 1) - if on last cell, return True
         # If we find no valid num, do nothing, allow iteration through range of 0-8, but return False if we run out of options (back on first solve index w no answer)
 
-        if self.solve(board, 0, -1) == False:
-            print("Error with given input.")
-        else:
-            print(board)
+        self.solve(board, 1, -1)
 
     def solve(self, board: List[List[str]], index, first_solve):
-        if index <= 8:
-            y = 0
-            x = index
-        else:
-            y = index // 8
-            x = index - (y * 8)
-            if index % 8 == 0:
-                y = y - 1
-                x = 8
+        y = index // 9
+        x = index % 9
+
+        if y >= 5 and x >= 6:
+            print("---------")
+            for z in range(9):
+                print(board[z])
+            print("---------")
 
         if board[y][x] == ".":
             if first_solve < 0:
@@ -56,6 +52,8 @@ class Solution:
                     
                     if self.solve(board, index + 1, first_solve) == True:  # Ensure we actually exit the recursion on solve
                         return True
+                    
+                    board[y][x] = "."  # Before dropping out of this instance, reset the cell
 
                 if valid == False and i == 9:
                     board[y][x] = "."  # No valid answer, clear it
