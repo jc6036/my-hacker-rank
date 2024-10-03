@@ -29,7 +29,7 @@ public class Solution {
 
         while(arrWindow.end - arrWindow.start < nums.Length - 1)
         {
-            if(MainArrayRemainderFromPrefix(prefixArr, arrWindow) == SubArrayRemainderFromPrefix(prefixArr, arrWindow))
+            if(prefixArr[prefixArr.Length - 1] == SubArrayRemainderFromPrefix(prefixArr, arrWindow))
             {
                 return (arrWindow.end - arrWindow.start) + 1;
             }
@@ -49,7 +49,14 @@ public class Solution {
         for(int i = 0; i < nums.Length; i++)
         {
             sum = sum + (long)nums[i];
-            prefixes[i] = (int)(sum % (long)p);
+            if(sum < (long)p)
+            {
+                prefixes[i] = nums[i];
+            }
+            else
+            {
+                prefixes[i] = (int)(sum % (long)p);
+            }
         }
 
         return prefixes;
@@ -64,22 +71,6 @@ public class Solution {
         else
         {
             return prefixes[arrWindow.end] - prefixes[arrWindow.start - 1];
-        }
-    }
-
-    public long MainArrayRemainderFromPrefix(int[] prefixes, window arrWindow) 
-    {
-        if(arrWindow.start == 0)
-        {
-            return prefixes[prefixes.Length-1] - prefixes[arrWindow.end];
-        }
-        else if (arrWindow.end == prefixes.Length - 1)
-        {
-            return prefixes[arrWindow.start - 1];
-        }
-        else
-        {
-            return prefixes[arrWindow.start - 1] + (prefixes[prefixes.Length-1] - prefixes[arrWindow.end]);            
         }
     }
 
