@@ -12,7 +12,7 @@ public class Solution {
         // Update: this is also a prefix problem, not just sliding windows. 
         // Should've known, find longest/smallest sub-x of x is almost always prefix
 
-        uint[] prefixArr = CreatePrefixSumArray(nums);
+        long[] prefixArr = CreatePrefixSumArray(nums);
 
         if (prefixArr[prefixArr.Length-1] % p == 0)
         {
@@ -21,7 +21,7 @@ public class Solution {
 
         // Window pointers
         window arrWindow = new window();
-        uint sum = 0; // Sum in a uint as inputs contain sums that will overflow an int
+        long sum = 0; // Sum in a uint as inputs contain sums that will overflow an int
 
         while(arrWindow.end - arrWindow.start < nums.Length - 1)
         {
@@ -41,13 +41,13 @@ public class Solution {
         return -1;        
     }
 
-    public uint[] CreatePrefixSumArray(int[] nums)
+    public long[] CreatePrefixSumArray(int[] nums)
     {
-        uint sum = 0;
-        uint[] prefixes = new uint[nums.Length];
+        long sum = 0;
+        long[] prefixes = new long[nums.Length];
         for(int i = 0; i < nums.Length; i++)
         {
-            sum = sum + (uint)nums[i];
+            sum = sum + (long)nums[i];
             prefixes[i] = sum;
         }
 
@@ -55,7 +55,7 @@ public class Solution {
     }
 
     // Summing func that takes into account our window position
-    public uint SumSubArrayFromPrefix(int[] nums, uint[] prefixes, window arrWindow) 
+    public long SumSubArrayFromPrefix(int[] nums, long[] prefixes, window arrWindow) 
     {
         if(arrWindow.start == 0)
         {
