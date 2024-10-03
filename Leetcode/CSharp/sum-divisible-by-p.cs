@@ -59,11 +59,15 @@ public class Solution {
     {
         if(arrWindow.start == 0)
         {
-            return prefixes[arrWindow.end];
+            return prefixes[prefixes.Length-1] - prefixes[arrWindow.end];
+        }
+        else if (arrWindow.end == nums.Length - 1)
+        {
+            return prefixes[arrWindow.start - 1];
         }
         else
         {
-            return prefixes[arrWindow.end] - prefixes[arrWindow.start - 1];
+            return prefixes[arrWindow.start - 1] + (prefixes[prefixes.Length-1] - prefixes[arrWindow.end]);            
         }
     }
 
