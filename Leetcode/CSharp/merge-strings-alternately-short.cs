@@ -190,3 +190,29 @@ public class Solution {
         return output.ToString();
     }
 }
+
+
+// Final optimization, beats 97%
+public class Solution {
+    unsafe public string MergeAlternately(string word1, string word2) 
+    {
+        StringBuilder output = new StringBuilder();
+        byte minLength = (byte)Math.Min(word1.Length, word2.Length);
+        byte greaterWord = (byte)((byte)word1.Length > (byte)word2.Length ? 1 : 2);
+        
+        for(byte i = 0; i < minLength; i++)
+        {
+            output.Append(word1[i]);
+            output.Append(word2[i]);
+        }
+
+        if(greaterWord == 1)
+        {
+            return output.Append(word1.Substring(minLength)).ToString();
+        }
+        else
+        {
+            return output.Append(word2.Substring(minLength)).ToString();
+        }
+    }
+}
