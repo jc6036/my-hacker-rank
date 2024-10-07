@@ -79,3 +79,61 @@ public class Solution {
         return new String(output, 0, totalLength);
     }
 }
+
+// Another version with some frankly ridiuclous and stupid optimizations thrown in
+
+public class Solution {
+    unsafe public string MergeAlternately(string word1, string word2) 
+    {
+        char* output = stackalloc char[word1.Length + word2.Length]; // Use char pointer instead of string builder for speed boost
+        byte[] indices = [0,0,0,1]; // Slight speed boost by using an array instead of individual vars
+        byte word1Length = (byte)word1.Length;
+        byte word2Length = (byte)word2.Length;
+        /*int bufIndex = 0;
+        int greaterLength = 0;
+        int shorterLength = 0;
+        int longerWord = 1;*/
+
+        if(word1Length >= word2Length)
+        {
+            indices[1] = word1Length;
+            indices[2] = word2Length;
+        }
+        else
+        {
+            indices[1] = word2Length;
+            indices[2] = word1Length;
+            indices[3] = 2;
+        }
+
+        for(int i = 0; i < indices[2]; i++)
+        {
+            output[indices[0]] = word1[i];
+            indices[0]++;
+            output[indices[0]] = word2[i];
+            indices[0]++;
+        }
+
+        if(indices[1] != indices[2])
+        {
+            if(indices[3] == 1)
+            {
+                for(int i = indices[2]; i < indices[1]; i++)
+                {
+                    output[indices[0]] = word1[i];
+                    indices[0]++;
+                }
+            }
+            else
+            {
+                for(int i = indices[2]; i < indices[1]; i++)
+                {
+                    output[indices[0]] = word2[i];
+                    indices[0]++;
+                }
+            }
+        }
+
+        return new String(output, 0, word1.Length + word2.Length);
+    }
+}
