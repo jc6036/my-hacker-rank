@@ -4,11 +4,8 @@ from tree import BTree
 if __name__ == '__main__':
     mytree = BTree()
 
-    mytree.insert(5)
-    mytree.insert(10)
-    mytree.insert(2)
-    mytree.insert(3)
-    mytree.insert(15)
+    for i in [5, 2, -1, 15, 20, 25, 1, 3, 55, 100, 230, -40, -60, 10]:
+        mytree.insert(i)
     mytree.traverse()
 
     srch = mytree.search(15)
