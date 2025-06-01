@@ -4,6 +4,7 @@ class BNode:
         self.parent = parent
         self.left = left
         self.right = right
+        self.height = 0
     
     def get_parent(self):
         return self.parent
@@ -28,3 +29,20 @@ class BNode:
     
     def set_data(self, data):
         self.data = data
+
+    def set_height(self, height):
+        self.height = height
+    
+    def get_height(self):
+        return self.height
+    
+    def get_balance_factor(self):
+        l = 0
+        r = 0
+
+        if self.left == None:
+            l = -1
+        if self.right == None:
+            r = -1
+        
+        return l - r
