@@ -33,7 +33,7 @@ class mygraph:
         while len(queue) > 0:
             current = queue.pop(0)
             if current not in visited:
-                print(current.key)
+                print(f"{current.key} | {current.getpathweight()}")
                 visited.append(current)
                 for edge in current.edges:
                     for node in self.nodes:
@@ -54,7 +54,7 @@ class mygraph:
         while len(queue) > 0:
             current = queue.pop(0)
             if current not in visited:
-                print(current.key)
+                print(f"{current.key} | {current.getpathweight()}")
                 visited.append(current)
                 for edge in current.edges:
                     for node in self.nodes:
@@ -63,4 +63,29 @@ class mygraph:
                             break
     
     def dijkstra(self, key):
+        print("dijkstra")
+        queue = self.nodes[:]
+        start = None
+
+        for node in queue:
+            if node.key == key:
+                start = node
+                break
         
+        start.setpathweight(0)
+        current = queue[0]
+
+        while len(queue) > 0:
+            current = queue[0]
+            for node in queue:      
+                if node.getpathweight() < current.getpathweight():
+                    current = node
+
+            queue.remove(current)
+
+            for edge in current.edges:
+                for node in self.nodes:
+                    if edge[0] == node.key:
+                        if current.getpathweight() + edge[1] < node.getpathweight():
+                            node.setpathweight(current.getpathweight() + edge[1])
+                            node.setpred(current)

@@ -14,3 +14,6 @@ if __name__ == '__main__':
     graph.bfsearch('A')
     print("-----")
     graph.dfsearch('A')
+    print("-------")
+    graph.dijkstra('A')
+    graph.dfsearch('A')
